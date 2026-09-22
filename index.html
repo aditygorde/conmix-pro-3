@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ConMix Pro | Concrete Mix Design</title>
+<meta name="description" content="ConMix Pro — professional concrete mix design calculator using a Python calculation engine with IS 10262:2019 and IS 456:2000 checks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="noise"></div>
+<header class="topbar">
+  <a class="brand" href="#">
+    <span class="brand-mark">Σ</span>
+    <span><b>ConMix Pro</b><small>Concrete Mix Design</small></span>
+  </a>
+  <div class="standard-pill"><span></span> IS 10262:2019</div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">CIVIL ENGINEERING • PYTHON ENGINE</div>
+    <h1>Concrete mix design,<br><em>calculated clearly.</em></h1>
+    <p>A focused engineering calculator for M15–M50 concrete, built around the IS 10262:2019 mix-proportioning workflow and IS 456:2000 durability checks.</p>
+    <div class="hero-tags">
+      <span>Python calculation engine</span><span>IS 10262:2019</span><span>IS 456:2000</span>
+    </div>
+  </div>
+  <div class="hero-visual" aria-hidden="true">
+    <div class="cube">
+      <div class="face front"></div><div class="face right"></div><div class="face top"></div>
+      <span class="cube-label">MIX<br>DESIGN</span>
+    </div>
+    <div class="ring r1"></div><div class="ring r2"></div><div class="dot d1"></div><div class="dot d2"></div>
+  </div>
+</section>
+
+<section class="workspace">
+  <div class="panel form-panel">
+    <div class="panel-head">
+      <div><span class="step">01</span><h2>Design inputs</h2><p>Select the parameters for your mix.</p></div>
+      <div class="status-dot">READY</div>
+    </div>
+    <form id="mixForm">
+      <div class="field-grid">
+        <label>Concrete grade
+          <select name="grade">
+            <option>M15</option><option>M20</option><option selected>M25</option><option>M30</option>
+            <option>M35</option><option>M40</option><option>M45</option><option>M50</option>
+          </select>
+        </label>
+        <label>Exposure condition
+          <select name="exposure"><option>Mild</option><option selected>Moderate</option><option>Severe</option><option>Very Severe</option><option>Extreme</option></select>
+        </label>
+        <label>Aggregate size
+          <select name="aggregate_size"><option value="10">10 mm</option><option value="20" selected>20 mm</option><option value="40">40 mm</option></select>
+        </label>
+        <label>Fine aggregate zone
+          <select name="sand_zone"><option>Zone I</option><option selected>Zone II</option><option>Zone III</option><option>Zone IV</option></select>
+        </label>
+        <label>Cement type
+          <select name="cement_type"><option selected>OPC43</option><option>OPC53</option></select>
+        </label>
+        <label>Required slump <span class="unit">mm</span>
+          <input name="slump" type="number" value="50" min="1" max="180" step="1">
+        </label>
+      </div>
+
+      <div class="subsection"><span>Material properties</span></div>
+      <div class="field-grid compact">
+        <label>Cement SG<input name="sg_cement" type="number" value="3.15" step="0.01"></label>
+        <label>Fine aggregate SG<input name="sg_fine" type="number" value="2.65" step="0.01"></label>
+        <label>Coarse aggregate SG<input name="sg_coarse" type="number" value="2.70" step="0.01"></label>
+        <label>Admixture dosage <span class="unit">kg/m³</span><input name="admixture_dosage" type="number" value="0" min="0" step="0.1"></label>
+      </div>
+      <button class="calculate" type="submit"><span>Calculate mix design</span><b>→</b></button>
+      <p class="tiny-note">The Python API is the calculation source. No client-side duplicate formula is used.</p>
+    </form>
+  </div>
+
+  <div class="panel result-panel">
+    <div class="panel-head">
+      <div><span class="step">02</span><h2>Mix result</h2><p>Your first-trial proportion per m³.</p></div>
+      <div class="result-grade" id="resultGrade">M25</div>
+    </div>
+    <div id="error" class="error hidden"></div>
+    <div id="empty" class="empty-state">
+      <div class="empty-icon">∑</div>
+      <h3>Ready to calculate</h3>
+      <p>Enter your design parameters and run the Python calculation engine.</p>
+    </div>
+    <div id="results" class="hidden">
+      <div class="ratio-card"><span>Mix proportion · C : FA : CA</span><strong id="mixRatio">1 : — : —</strong></div>
+      <div class="metric-grid">
+        <div class="metric"><span>Target mean strength</span><strong id="target">—</strong><small>MPa</small></div>
+        <div class="metric"><span>Governing W/C ratio</span><strong id="wc">—</strong><small>ratio</small></div>
+        <div class="metric"><span>Cement</span><strong id="cement">—</strong><small>kg/m³</small></div>
+        <div class="metric"><span>Water</span><strong id="water">—</strong><small>kg/m³</small></div>
+        <div class="metric"><span>Fine aggregate</span><strong id="fa">—</strong><small>kg/m³</small></div>
+        <div class="metric"><span>Coarse aggregate</span><strong id="ca">—</strong><small>kg/m³</small></div>
+      </div>
+      <div class="detail-list">
+        <div><span>Strength-based W/C</span><b id="strengthWc">—</b></div>
+        <div><span>Maximum W/C · IS 456</span><b id="maxWc">—</b></div>
+        <div><span>Entrapped air</span><b id="air">—</b></div>
+        <div><span>CA fraction</span><b id="caf">—</b></div>
+      </div>
+      <div class="notice"><b>Engineering note</b><span id="note">—</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="method">
+  <div class="method-title"><span class="step">03</span><div><h2>Calculation workflow</h2><p>A transparent view of what the Python engine does.</p></div></div>
+  <div class="flow">
+    <div><b>01</b><span>Target mean strength</span><small>fck + 1.65S</small></div>
+    <i>→</i>
+    <div><b>02</b><span>Water-cement ratio</span><small>Strength + durability check</small></div>
+    <i>→</i>
+    <div><b>03</b><span>Cement & water</span><small>Workability requirements</small></div>
+    <i>→</i>
+    <div><b>04</b><span>Aggregates</span><small>Absolute volume method</small></div>
+  </div>
+</section>
+
+<section class="info-grid">
+  <article><span class="info-icon">IS</span><h3>IS 10262:2019</h3><p>Concrete mix proportioning framework used for the design workflow.</p></article>
+  <article><span class="info-icon">456</span><h3>IS 456:2000</h3><p>Durability-related maximum water-cement ratio and minimum cement checks.</p></article>
+  <article><span class="info-icon">LAB</span><h3>Trial verification</h3><p>Calculated proportions are first-trial values and require verification with actual materials.</p></article>
+</section>
+</main>
+
+<footer>
+  <div>CONMIX PRO · CONCRETE MIX DESIGN</div>
+  <span class="credit">Made by <b>Aditya Gorde</b></span>
+</footer>
+<script src="/script.js"></script>
+</body>
+</html>

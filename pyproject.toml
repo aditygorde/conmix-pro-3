@@ -1,0 +1,9 @@
+[project]
+name = "concrete-mix-design-by-python"
+version = "1.0.0"
+description = "Concrete mix design calculator using a Python Vercel Function."
+requires-python = ">=3.12,<3.15"
+dependencies = [
+    "fastapi>=0.141.1",
+    "pydantic>=2.0"
+]
